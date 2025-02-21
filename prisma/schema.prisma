@@ -160,7 +160,7 @@ model PendingIssues {
   event      Events       @relation(fields: [eventId], references: [id], name: "PendingIssuesEvent")
   rejections Rejections[] @relation("RejectionsPendingIssue")
 
-  @@map("pending_issues")
+  @@map("pendingissues")
 }
 
 model Events {

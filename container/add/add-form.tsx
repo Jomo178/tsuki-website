@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
+import Image from "next/image";
+import Bunny from "@/public/images/bunny.svg";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Events, Staff } from "@prisma/client";
-import { CalendarIcon, Info, Star } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { hasPermission, toUpperCase } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { FileUploader } from "@/components/ui/file-uploader";
 import {
   Form,
@@ -31,11 +30,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 import { addFormSchema, AddFormSchemaType } from "./add";
 
@@ -90,12 +84,12 @@ export default function AddForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Issue General Information</FormLabel>
+                    <FormLabel>Card General Information</FormLabel>
                     <FormControl>
                       <FloatingLabelInput
                         {...field}
                         id="name"
-                        label="Issue Name"
+                        label="Card Name"
                       />
                     </FormControl>
                     <FormMessage>{getFieldError("name")}</FormMessage>
@@ -113,7 +107,7 @@ export default function AddForm({
                       <FloatingLabelInput
                         {...field}
                         id="era"
-                        label="Issue Era"
+                        label="Card Era"
                         className="w-full"
                       />
                     </FormControl>
@@ -132,7 +126,7 @@ export default function AddForm({
                       <FloatingLabelInput
                         {...field}
                         id="group"
-                        label="Issue Group"
+                        label="Card Group"
                       />
                     </FormControl>
                     <FormMessage>{getFieldError("group")}</FormMessage>
@@ -147,47 +141,13 @@ export default function AddForm({
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel className="flex justify-between">
-                      <p>Issue Code</p>
-                      <Tooltip>
-                        <TooltipTrigger disabled className="cursor-pointer">
-                          <Info size={16} />
-                        </TooltipTrigger>
-                        <TooltipContent className="w-72">
-                          {/* //TODO: fix this */}
-                          <p className="mb-2 font-semibold">Code Generation:</p>
-                          <ul className="ml-4 list-disc">
-                            <li>
-                              <strong>Group</strong>: First 3 letters (e.g., BTS
-                              → BTS).
-                            </li>
-                            <li>
-                              <strong>Version</strong>: 1, 2, 3, etc.
-                            </li>
-                            <li>
-                              <strong>Artist</strong>: First 2 letters (e.g.,
-                              Jimin → JM).
-                            </li>
-                            <li>
-                              <strong>Tier</strong>: 1, 2, 3, 4.
-                            </li>
-                            <li>
-                              <strong>Event</strong>: Add event initial before
-                              group name.
-                            </li>
-                          </ul>
-                          <p className="mt-2 font-medium">Examples:</p>
-                          <p className="font-mono">
-                            Regular: BTS1JM2 <br />
-                            Event: AIRJE
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
+                      Card Code
                     </FormLabel>
                     <FormControl>
                       <FloatingLabelInput
                         {...field}
                         id="code"
-                        label="Issue Code"
+                        label="Card Code"
                       />
                     </FormControl>
                     <FormMessage>{getFieldError("code")}</FormMessage>
@@ -204,7 +164,7 @@ export default function AddForm({
                   render={({ field, fieldState }) => {
                     return (
                       <FormItem className="w-full">
-                        <FormLabel>Issue Rarity</FormLabel>
+                        <FormLabel>Card Rarity</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={(value) => {
@@ -213,11 +173,11 @@ export default function AddForm({
                             value={field.value.toString()}
                           >
                             <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select the Issue Rarity" />
+                              <SelectValue placeholder="Select the Card Rarity" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Issue Rarity</SelectLabel>
+                                <SelectLabel>Card Rarity</SelectLabel>
                                 {Array.from({ length: 5 }).map((_, index) => (
                                   <SelectItem
                                     key={index}
@@ -226,7 +186,14 @@ export default function AddForm({
                                     <div className="flex items-center gap-2">
                                       {Array.from({ length: index + 1 }).map(
                                         (_, starIndex) => (
-                                          <Star key={starIndex} size={16} />
+                                          <Image
+                                            src={Bunny}
+                                            key={starIndex}
+                                            className="!fill-white text-white"
+                                            alt="bunny"
+                                            width={20}
+                                            height={20}
+                                          />
                                         )
                                       )}
                                     </div>
@@ -303,7 +270,7 @@ export default function AddForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Choose the event that the issue is related to.
+                      Choose the event that the card is related to.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -318,7 +285,7 @@ export default function AddForm({
                   name="image"
                   render={() => (
                     <FormItem className="w-full">
-                      <FormLabel>Issue Image</FormLabel>
+                      <FormLabel>Card Image</FormLabel>
                       <FormControl>
                         <FileUploader
                           value={
