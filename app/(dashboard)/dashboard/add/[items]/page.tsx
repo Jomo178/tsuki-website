@@ -11,8 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { getAllRarities } from "../../action";
-
 export async function generateStaticParams() {
   const types = Object.values(ItemsType);
   return types.map((type) => ({

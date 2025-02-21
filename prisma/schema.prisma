@@ -92,10 +92,12 @@ enum AuthorizationType {
 }
 
 enum StaffRole {
-  developer
   owner
-  admin
-  tsukiStaff
+  moderator
+  regularDesigner
+  customDesigner
+  host
+  supportStaff
 }
 
 model Cards {

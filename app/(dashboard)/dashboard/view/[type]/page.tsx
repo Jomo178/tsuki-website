@@ -8,8 +8,6 @@ import { ItemsType } from "@prisma/client";
 import { ItemsNameType, ItemStatusViewType } from "@/types/view";
 import { getCurrentUser } from "@/lib/session";
 
-import { getAllRarities } from "../../action";
-
 export async function generateStaticParams() {
   const itemsTypeArray = Object.values(ItemsType).map((type) => {
     let arrayType: { id: string }[] = [{ id: type }];
