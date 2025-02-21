@@ -1,10 +1,6 @@
 "use server";
 
-import { revalidateTag, unstable_cache } from "next/cache";
-import {
-  rarityFormSchema,
-  RarityFormSchemaType,
-} from "@/container/event/event";
+import { unstable_cache } from "next/cache";
 import { StaffTableItems } from "@/container/staff/staff-columns";
 
 import { prisma } from "@/lib/database";
@@ -43,43 +39,6 @@ export const getStaffAllInformation = unstable_cache(
   ["/dashboard/staff"],
   { revalidate: 60 * 60 * 5, tags: ["all-staff"] }
 );
-
-export const getAllRarities = unstable_cache(
-  async () => {
-    const rarities = await prisma.rarity.findMany();
-    return rarities;
-  },
-  ["/dashboard/add/issues"],
-  { revalidate: 60 * 60 * 24, tags: ["all-rarities"] }
-);
-
-export async function addRarity(formData: RarityFormSchemaType) {
-  const validatedFields = rarityFormSchema.safeParse(formData);
-
-  if (!validatedFields.success) {
-    return { message: "Not valid Data." };
-  }
-
-  const rarityExists = await prisma.rarity.findUnique({
-    where: { name: formData.name },
-  });
-
-  if (rarityExists) {
-    return { message: "Rarity already exists with the same name." };
-  }
-
-  const rarity = await prisma.rarity.create({
-    data: {
-      name: formData.name,
-      icon: formData.icon,
-      createdById: formData.createdById,
-    },
-  });
-
-  revalidateTag("all-rarities");
-
-  return { message: "Rarity added successfully!", rarity };
-}
 
 export async function checkForDuplicatedIssueCodes(
   codes: string[]
