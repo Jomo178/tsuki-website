@@ -12,23 +12,13 @@ const itemsInclude = {
   },
 } as const;
 
-export type IssuesWithRelation = Omit<
-  Prisma.IssuesGetPayload<{
-    include: typeof itemsInclude;
-  }>,
-  "rarity"
-> & {
-  rarity: { level: number; icon: string };
-};
+export type IssuesWithRelation = Prisma.IssuesGetPayload<{
+  include: typeof itemsInclude;
+}>;
 
-export type PendingIssuesWithRelation = Omit<
-  Prisma.PendingIssuesGetPayload<{
-    include: typeof itemsInclude;
-  }>,
-  "rarity"
-> & {
-  rarity: { level: number; icon: string };
-};
+export type PendingIssuesWithRelation = Prisma.PendingIssuesGetPayload<{
+  include: typeof itemsInclude;
+}>;
 
 export type EventsWithRelation = Prisma.EventsGetPayload<{
   include: { createdBy: true; issues: true; pendingIssues: true };

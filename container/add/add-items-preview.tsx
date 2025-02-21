@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { addIssues } from "@/server/add-action";
-import { Rarity, Staff } from "@prisma/client";
+import { Staff } from "@prisma/client";
 import { CloudUpload, Eye, Loader2, Star } from "lucide-react";
 import { toast } from "sonner";
 
@@ -46,7 +46,6 @@ interface AddItemsPreviewProps {
   >;
   defaultValues: AddFormSchemaType;
   carouselApi: CarouselApi;
-  rarities: Rarity[];
   currentUser: Staff;
 }
 
@@ -55,7 +54,6 @@ export default function AddItemsPreview({
   setItemsFormPropsValueAction,
   defaultValues,
   carouselApi,
-  rarities,
   currentUser,
 }: AddItemsPreviewProps) {
   const [openDialog, setOpenDialog] = useState(false);
@@ -171,12 +169,6 @@ export default function AddItemsPreview({
     const uploadPromises = itmesFormPropsValue.map((item, index) =>
       addIssues({
         ...item,
-        rarity: {
-          level: item.rarity.level,
-          icon:
-            rarities.find((r) => r.name === item.rarity.icon)?.icon ??
-            "default",
-        },
       })
         .then(({ message, variant }) => {
           setUploadingProgress(
@@ -293,9 +285,7 @@ export default function AddItemsPreview({
           </SheetHeader>
           <div className="grid h-[80vh] grid-cols-1 gap-4 overflow-y-auto sm:grid-cols-2 lg:grid-cols-4">
             {itmesFormPropsValue.map((item, index) => {
-              return (
-                <CardPreview item={item} rarities={rarities} key={item.id} />
-              );
+              return <CardPreview item={item} key={item.id} />;
             })}
           </div>
           <div className="flex flex-row sm:col-span-2 md:col-span-4 md:justify-end">
@@ -313,23 +303,13 @@ export default function AddItemsPreview({
   );
 }
 
-function CardPreview({
-  item,
-  rarities,
-}: {
-  item: AddFormSchemaType;
-  rarities: Rarity[];
-}) {
+function CardPreview({ item }: { item: AddFormSchemaType }) {
   const imageUrl = useMemo(() => {
     if (item.image && Object.keys(item.image).length > 0) {
       return URL.createObjectURL(item.image);
     }
     return "";
   }, [item.image]);
-
-  const rarity =
-    rarities.find((rarity) => rarity.name === item.rarity.icon)?.icon ||
-    rarities[0].icon;
 
   return (
     <Card
@@ -366,28 +346,13 @@ function CardPreview({
             <div className="flex items-center justify-between">
               <Separator className="hidden h-[2px] w-4 sm:block" />
               <span className="text-left text-sm font-medium leading-none text-muted-foreground">
-                Level:
-              </span>
-              <span className="!mt-0 flex w-1/2 text-left text-sm font-medium leading-none text-muted-foreground">
-                {Array.from({ length: item.rarity.level }).map(
-                  (_, starIndex) => (
-                    <Star key={starIndex} size={16} />
-                  )
-                )}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Separator className="hidden h-[2px] w-4 sm:block" />
-              <span className="text-left text-sm font-medium leading-none text-muted-foreground">
                 Rarity:
               </span>
-              <Image
-                src={`https://cdn.discordapp.com/emojis/${rarity.split(":")[2]?.replace(">", "")}.webp?size=44`}
-                alt={item.name}
-                width={20}
-                height={20}
-              />
+              <span className="!mt-0 flex w-1/2 text-left text-sm font-medium leading-none text-muted-foreground">
+                {Array.from({ length: item.rarity }).map((_, starIndex) => (
+                  <Star key={starIndex} size={16} />
+                ))}
+              </span>
             </div>
           </div>
         </div>

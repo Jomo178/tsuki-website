@@ -75,7 +75,6 @@ model Staff {
   updatedAt DateTime            @updatedAt
 
   createdEvents         Events[]        @relation("event_createdBy")
-  rarities              Rarity[]        @relation("rarity_createdBy")
   createdPendingIssues  PendingIssues[] @relation("PendingIssuesCreatedBy")
   approvedPendingIssues PendingIssues[] @relation("PendingIssuesApprovedBy")
   rejections            Rejections[]    @relation("RejectionsRejectedBy")
@@ -96,7 +95,7 @@ enum StaffRole {
   developer
   owner
   admin
-  shuaStaff
+  tsukiStaff
 }
 
 model Cards {
@@ -109,7 +108,7 @@ model Cards {
   image  String
   date   DateTime
   owner  String
-  issue  String  
+  issue  String
 
   @@map("cards")
 }
@@ -119,10 +118,10 @@ model Issues {
   name         String
   era          String
   group        String
-  rarity       Json
+  rarity       Int
   code         String   @unique
   image        String
-  droppable    Boolean
+  dropAble     Boolean
   createdAt    DateTime
   updatedAt    DateTime @updatedAt
   eventId      String   @db.ObjectId
@@ -143,11 +142,11 @@ model PendingIssues {
   name         String
   era          String
   group        String
-  rarity       Json
+  rarity       Int
   code         String    @unique
   image        String
   eventId      String    @db.ObjectId
-  droppable    Boolean
+  dropAble     Boolean
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   createdById  String    @db.ObjectId
@@ -160,19 +159,6 @@ model PendingIssues {
   rejections Rejections[] @relation("RejectionsPendingIssue")
 
   @@map("pending_issues")
-}
-
-model Rarity {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String   @unique
-  icon        String   @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String   @db.ObjectId
-
-  createdBy Staff @relation(fields: [createdById], references: [id], name: "rarity_createdBy")
-
-  @@map("rarities")
 }
 
 model Events {

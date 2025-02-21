@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Events, Rarity, Staff } from "@prisma/client";
+import { Events, Staff } from "@prisma/client";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 import { Plus, Trash2 } from "lucide-react";
 
-import { toUpperCase } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CarouselApi } from "@/components/ui/carousel";
 import {
@@ -33,7 +32,6 @@ interface AddButtonControlProps {
   setCarouselCurrentIndexAction: React.Dispatch<React.SetStateAction<number>>;
   currentUser: Staff;
   event: Events;
-  rarities: Rarity[];
 }
 
 export default function AddButtonControl({
@@ -45,7 +43,6 @@ export default function AddButtonControl({
   setCarouselCurrentIndexAction,
   currentUser,
   event,
-  rarities,
 }: AddButtonControlProps) {
   const [openDialog, setOpenDialog] = useState(false);
   const [getNewCustomProps, setNewCustomProps] = defaultAddFromValues();
@@ -133,7 +130,6 @@ export default function AddButtonControl({
               errors: [],
             }}
             carouselApi={carouselApi}
-            rarities={rarities}
             currentUser={currentUser}
           />
         </div>
@@ -142,7 +138,6 @@ export default function AddButtonControl({
       <ItemsCustomPropertiesDialog
         setItemFormPropsValueAction={setItemsFormPropsValueAction}
         currentUser={currentUser}
-        rarities={rarities}
         openDialog={openDialog}
         setOpenDialogAction={setOpenDialog}
         getNewCustomProps={{

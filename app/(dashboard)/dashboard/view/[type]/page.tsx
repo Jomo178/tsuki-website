@@ -36,7 +36,6 @@ export default async function Page({
     return notFound();
   const event = await getCurrentEvent(["issues"]);
   if (!event) return notFound();
-  const rarities = await getAllRarities();
 
   const itemNameType = type?.split("-")[1] as ItemsNameType;
 
@@ -47,7 +46,6 @@ export default async function Page({
           itemNameType={type as ItemsNameType}
           currentUser={getCurrentStaff.staff}
           event={event}
-          rarities={rarities}
         />
       ) : (
         <ViewAllItems
@@ -55,7 +53,6 @@ export default async function Page({
           itemsViewPortId={type as ItemStatusViewType<typeof itemNameType>}
           currentUser={getCurrentStaff.staff}
           event={event}
-          rarities={rarities}
         />
       )}
     </div>

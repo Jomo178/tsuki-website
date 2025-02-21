@@ -186,11 +186,9 @@ function IssueCardDetails({
           <div className="flex items-center space-x-3">
             <small className="text-sm font-medium leading-none">Rarity:</small>
             <code className="relative flex w-fit rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
-              {Array.from({ length: issue.rarity.level }).map(
-                (_, starIndex) => (
-                  <Star key={starIndex} size={16} />
-                )
-              )}
+              {Array.from({ length: issue.rarity }).map((_, starIndex) => (
+                <Star key={starIndex} size={16} />
+              ))}
             </code>
           </div>
           <div className="space-x-3">

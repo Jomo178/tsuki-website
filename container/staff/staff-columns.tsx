@@ -64,7 +64,7 @@ export const staffColumns: ColumnDef<StaffTableItems>[] = [
       <div className="flex items-center gap-3">
         <img
           className="rounded-full"
-          src={row.original.image ?? "/images/shua.png"}
+          src={row.original.image ?? "/images/tsuki.png"}
           width={40}
           height={40}
           alt={row.getValue("name")}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Events, Rarity, Staff } from "@prisma/client";
+import { Events, Staff } from "@prisma/client";
 import { useQueryState } from "nuqs";
 import { useInView } from "react-intersection-observer";
 import Balancer from "react-wrap-balancer";
@@ -37,7 +37,6 @@ interface ViewAllItemsProps<T extends ItemsNameType> {
   itemsViewPortId: ItemStatusViewType<T>;
   currentUser: Staff;
   event: Events;
-  rarities: Rarity[];
 }
 
 export default function ViewAllItems<T extends ItemsNameType>({
@@ -45,7 +44,6 @@ export default function ViewAllItems<T extends ItemsNameType>({
   itemsViewPortId,
   currentUser,
   event,
-  rarities,
 }: ViewAllItemsProps<T>) {
   const { open } = useMultiSidebar().rightSidebar;
   const [scrollTrigger, inView] = useInView({ initialInView: true });
@@ -143,7 +141,6 @@ export default function ViewAllItems<T extends ItemsNameType>({
           setSortBy(sort);
           setSortOrder(orderBy);
         }}
-        rarities={rarities}
       />
       {noData && viewPort.data.length === 0 ? (
         <EmptyState
@@ -207,7 +204,6 @@ export default function ViewAllItems<T extends ItemsNameType>({
                     )}
                     currentUser={currentUser}
                     event={event}
-                    rarities={rarities}
                     item={item}
                     itemNameType={itemNameType}
                     isItemSelected={isItemSelected}

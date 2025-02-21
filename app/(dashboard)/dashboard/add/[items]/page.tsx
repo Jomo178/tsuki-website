@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AddCarousel from "@/container/add/add-carousel";
 import { getAllEvents, getCurrentEvent } from "@/server/events-action";
-import { ItemsType, Rarity } from "@prisma/client";
+import { ItemsType } from "@prisma/client";
 
 import { getCurrentUser } from "@/lib/session";
 import { toUpperCase } from "@/lib/utils";
@@ -15,26 +15,22 @@ import { getAllRarities } from "../../action";
 
 export async function generateStaticParams() {
   const types = Object.values(ItemsType);
-  const rarities = await getAllRarities();
   return types.map((type) => ({
     items: type,
-    rarities,
   }));
 }
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ items: ItemsType; rarities: Rarity[] }>;
+  params: Promise<{ items: ItemsType }>;
 }) {
-  const { items, rarities = [] } = await params;
+  const { items } = await params;
   const issueEvent = await getCurrentEvent([items]);
   const allEvents = await getAllEvents();
   const getCurrentStaff = await getCurrentUser(true);
   if (!getCurrentStaff?.staff || !getCurrentStaff.staff.isInTeam)
     return notFound();
-  if (!rarities || rarities?.length === 0)
-    rarities.push(...(await getAllRarities()));
 
   return (
     <Tabs
@@ -66,7 +62,6 @@ export default async function Page({
               />
             ) : (
               <AddCarousel
-                rarities={rarities}
                 currentUser={getCurrentStaff.staff}
                 event={issueEvent}
                 events={allEvents}

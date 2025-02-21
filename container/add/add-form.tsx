@@ -3,8 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Events, Rarity, Staff } from "@prisma/client";
-import { format } from "date-fns";
+import { Events, Staff } from "@prisma/client";
 import { CalendarIcon, Info, Star } from "lucide-react";
 import { useForm } from "react-hook-form";
 
@@ -25,7 +24,9 @@ import MultipleSelector, { Option } from "@/components/ui/multiselect";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -37,17 +38,10 @@ import {
 } from "@/components/ui/tooltip";
 
 import { addFormSchema, AddFormSchemaType } from "./add";
-import AddRarity from "./add-rarity";
-
-// TODO: fix this
-const NOSSRMULTISELECT = dynamic(() => import("@/components/ui/multiselect"), {
-  ssr: false,
-});
 
 interface AddFormProps {
   index: number;
   currentUser: Staff;
-  rarities: Rarity[];
   event: Events;
   events: Events[];
   defaultValues?: AddFormSchemaType;
@@ -58,7 +52,6 @@ interface AddFormProps {
 export default function AddForm({
   index,
   currentUser,
-  rarities,
   event,
   events,
   defaultValues = {} as any,
@@ -66,14 +59,13 @@ export default function AddForm({
   onFormChangeAction,
 }: AddFormProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [raritiesState, setRarities] = useState<Rarity[]>(rarities);
   const form = useForm<AddFormSchemaType>({
     resolver: zodResolver(addFormSchema),
     defaultValues: {
       ...defaultValues,
       createdById: currentUser.id,
       eventId: event.id,
-      droppable: event.name.includes("Custom") ? false : true,
+      dropAble: event.name.includes("Custom") ? false : true,
     },
   });
 
@@ -83,21 +75,6 @@ export default function AddForm({
   const getFieldError = (fieldName: keyof AddFormSchemaType) =>
     defaultValues.errors?.find((error) => error?.path === fieldName)?.message ??
     "";
-
-  const rarityArray = [
-    { value: "xV", label: "Issue Level", disable: true },
-    ...(Array.from({ length: 5 }, (_, i) => ({
-      value: (i + 1).toString() + "_level",
-      label: `Level ${i + 1}`,
-      icon: Array.from({ length: i + 1 }, (_) => Star),
-    })) as Option[]),
-    { value: "xY", label: "Issue Icon", disable: true },
-    ...raritiesState?.map((value) => ({
-      value: value.name + "_icon",
-      label: toUpperCase(value.name),
-      image: `https://cdn.discordapp.com/emojis/${value.icon.split(":")[2]?.replace(">", "")}.webp?size=44`,
-    })),
-  ];
 
   return (
     <Form {...form}>
@@ -229,48 +206,35 @@ export default function AddForm({
                       <FormItem className="w-full">
                         <FormLabel>Issue Rarity</FormLabel>
                         <FormControl>
-                          <NOSSRMULTISELECT
-                            commandProps={{
-                              label: "Select level",
+                          <Select
+                            onValueChange={(value) => {
+                              form.setValue("rarity", parseInt(value));
                             }}
-                            title="rarity"
-                            defaultOptions={rarityArray}
-                            value={
-                              [
-                                rarityArray.find(
-                                  (r) =>
-                                    r.value === `${field.value.level}_level`
-                                ),
-                                rarityArray.find(
-                                  (r) => r.value === `${field.value.icon}_icon`
-                                ),
-                              ].filter(Boolean) as Option[]
-                            }
-                            placeholder="Select level"
-                            hidePlaceholderWhenSelected
-                            emptyIndicator={
-                              <p className="text-center text-sm">
-                                No results found
-                              </p>
-                            }
-                            onClick={() => setIsOpen(true)}
-                            onChange={(value) => {
-                              const level = value
-                                .find((v) => v.value.includes("level"))
-                                ?.value?.split("_")[0];
-
-                              const icon = value
-                                .find((v) => v.value.includes("icon"))
-                                ?.value?.split("_")[0];
-
-                              form.setValue("rarity", {
-                                level: Number(level),
-                                icon: icon ?? "",
-                              });
-
-                              onFormChangeAction(form.getValues(), index);
-                            }}
-                          />
+                            value={field.value.toString()}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select the Issue Rarity" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Issue Rarity</SelectLabel>
+                                {Array.from({ length: 5 }).map((_, index) => (
+                                  <SelectItem
+                                    key={index}
+                                    value={(index + 1).toString()}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      {Array.from({ length: index + 1 }).map(
+                                        (_, starIndex) => (
+                                          <Star key={starIndex} size={16} />
+                                        )
+                                      )}
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage>{getFieldError("rarity")}</FormMessage>
                       </FormItem>
@@ -329,7 +293,7 @@ export default function AddForm({
 
                           form.setValue("eventId", selectedEvent?.id ?? "");
                           form.setValue(
-                            "droppable",
+                            "dropAble",
                             selectedEvent?.name.includes("Custom")
                               ? false
                               : true
@@ -376,12 +340,6 @@ export default function AddForm({
                 />
               </>
             )}
-            <AddRarity
-              currentUser={currentUser}
-              isOpen={isOpen}
-              setIsOpenAction={setIsOpen}
-              setRaritiesAction={setRarities}
-            />
           </div>
         </div>
       </form>

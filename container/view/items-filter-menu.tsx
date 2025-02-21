@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { getAllEvents } from "@/server/events-action";
-import { Rarity } from "@prisma/client";
 import { Star, X } from "lucide-react";
 import { DiscordProfile } from "next-auth/providers/discord";
 import { useQueryState } from "nuqs";
@@ -53,16 +52,13 @@ const NOSSRMULTISELECT = dynamic(() => import("@/components/ui/multiselect"), {
 
 interface ItemsFilterMenuProps {
   appliedFilterAction: (filter: any, sort: any, orderBy: any) => void;
-  rarities: Rarity[];
 }
 
 export default function ItemsFilterMenu({
   appliedFilterAction,
-  rarities,
 }: ItemsFilterMenuProps) {
   const [staffProfiles, setStaffProfiles] = useState<StaffTableItems[]>([]);
   const [events, setEvents] = useState<EventsWithRelation[]>([]);
-  const [raritiesState, setRarities] = useState<Rarity[]>(rarities);
   const [filters, setFilters] = useQueryState("filters", searchParams.filters);
   const [filtersUi, setFiltersUi] = useState<Object | any>();
   const [sortBy, setSortBy] = useQueryState("sortBy", searchParams.sortBy);
@@ -90,21 +86,6 @@ export default function ItemsFilterMenu({
     setSortByUI(sortBy);
     setSortOrderUI(sortOrder);
   }, []);
-
-  const rarityOptions = [
-    { value: "xV", label: "Issue Level", disable: true },
-    ...(Array.from({ length: 4 }, (_, i) => ({
-      value: (i + 1).toString() + "_level",
-      label: `Level ${i + 1}`,
-      icon: Array.from({ length: i + 1 }, (_) => Star),
-    })) as Option[]),
-    { value: "xY", label: "Issue Icon", disable: true },
-    ...raritiesState?.map((value) => ({
-      value: value.name + "_icon",
-      label: toUpperCase(value.name),
-      image: `https://cdn.discordapp.com/emojis/${value.icon.split(":")[2]?.replace(">", "")}.webp?size=44`,
-    })),
-  ];
 
   const eventsOptions = events.map((event) => {
     const eventOption: Option = {

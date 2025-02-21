@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Events, ItemsType, Rarity, Staff } from "@prisma/client";
+import { Events, ItemsType, Staff } from "@prisma/client";
 import Balancer from "react-wrap-balancer";
 
 import { ItemListingView, ItemsNameType } from "@/types/view";
@@ -23,14 +23,12 @@ interface ViewItemsGroupPreviewProps<T extends ItemsNameType> {
   itemNameType: T;
   currentUser: Staff;
   event: Events;
-  rarities: Rarity[];
 }
 
 export default function ViewItemsGroupPreview<T extends ItemsNameType>({
   itemNameType,
   currentUser,
   event,
-  rarities,
 }: ViewItemsGroupPreviewProps<T>) {
   const { open } = useMultiSidebar().rightSidebar;
   const [loading, setLoading] = useState(false);
@@ -163,7 +161,6 @@ export default function ViewItemsGroupPreview<T extends ItemsNameType>({
                               key={item.id}
                               currentUser={currentUser}
                               event={event}
-                              rarities={rarities}
                               item={item}
                               itemNameType={itemNameType}
                               isItemSelected={itemViewPort.selectedItems

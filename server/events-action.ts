@@ -177,7 +177,7 @@ export async function releaseEvent(eventId: string) {
       createdById: pendingIssue.createdById,
       approvedById: pendingIssue.approvedById!,
       approvedAt: pendingIssue.approvedAt!,
-      droppable: pendingIssue.droppable,
+      dropAble: pendingIssue.dropAble,
     }));
 
     await tx.issues.createMany({
@@ -203,7 +203,7 @@ export async function endEvent(eventId: string) {
     const event = await tx.issues.updateMany({
       where: { eventId: eventId },
       data: {
-        droppable: false,
+        dropAble: false,
       },
     });
 

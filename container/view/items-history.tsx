@@ -20,7 +20,7 @@ export default function ItemsHistory<T extends ItemsNameType>({
   AllStaffInformation,
 }: ItemsHistoryProps<T>) {
   const getDataByDiscordId = (id: string) => {
-    const defaultData = { username: "IU", avatar: "/images/shua.png" };
+    const defaultData = { username: "IU", avatar: "/images/tsuki.png" };
     if (!AllStaffInformation) return defaultData;
     const info = AllStaffInformation.find((staff) => staff?.discordId === id);
     if (!info) return defaultData;

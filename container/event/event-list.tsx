@@ -40,9 +40,9 @@ function EventsList({
       (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
     )[0];
 
-    if (nextEvent.name.includes("Shua Release")) {
+    if (nextEvent.name.includes("Tsuki Release")) {
       const alternativeEvent = upcomingEvents.find(
-        (event) => !event.name.includes("Shua Release")
+        (event) => !event.name.includes("Tsuki Release")
       );
 
       if (alternativeEvent) {

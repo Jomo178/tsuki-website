@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { Events, Rarity, Staff } from "@prisma/client";
+import { Events, Staff } from "@prisma/client";
 
 import { ItemListingView, ItemsNameType, ItemType } from "@/types/view";
 import { cn, hasPermission } from "@/lib/utils";
@@ -49,7 +49,6 @@ interface ViewItemCardProps<T extends ItemsNameType> {
   setInformationSidebarAction?: (open: boolean) => void;
   currentUser: Staff;
   event: Events;
-  rarities: Rarity[];
 }
 
 export default function ViewItemCard<T extends ItemsNameType>({
@@ -62,7 +61,6 @@ export default function ViewItemCard<T extends ItemsNameType>({
   viewPortType,
   currentUser,
   event,
-  rarities,
   ...props
 }: DivProps<T>) {
   const {
@@ -188,7 +186,6 @@ export default function ViewItemCard<T extends ItemsNameType>({
         setOpenDialogAction={setOpenEditDialog}
         currentUser={currentUser}
         event={event}
-        rarities={rarities}
       />
 
       <DeleteItemsDialog

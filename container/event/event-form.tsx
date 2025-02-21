@@ -69,7 +69,7 @@ export function EventForm({
                       <Input type="text" {...field} />
                     </FormControl>
                     <FormDescription>
-                      The name of the event, e.g. "Shua Release #1"
+                      The name of the event, e.g. "Tsuki Release #1"
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

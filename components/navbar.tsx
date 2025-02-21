@@ -38,13 +38,13 @@ function Navbar({ sidebarToggle }: { sidebarToggle?: React.ReactNode }) {
           <div className="flex flex-shrink-0 items-center">
             {sidebarToggle}
             <Image
-              src="/images/shua.png"
-              alt="Shua Bot"
+              src="/images/tsuki.png"
+              alt="Tsuki Bot"
               width={40}
               height={40}
               className="rounded-full"
             />
-            <span className="ml-2 text-xl font-semibold">Shua</span>
+            <span className="ml-2 text-xl font-semibold">Tsuki</span>
           </div>
           <div className="flex items-center">
             {!session?.user ? (
@@ -53,8 +53,8 @@ function Navbar({ sidebarToggle }: { sidebarToggle?: React.ReactNode }) {
               <DropdownMenu onOpenChange={setIsOpen}>
                 <DropdownMenuTrigger className="inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium leading-4 transition duration-150 ease-in-out hover:text-gray-300 focus:outline-none">
                   <Image
-                    src={session.user.image ?? "/images/shua.png"}
-                    alt="Shua Bot"
+                    src={session.user.image ?? "/images/tsuki.png"}
+                    alt="Tsuki Bot"
                     width={40}
                     height={40}
                     className="rounded-full"

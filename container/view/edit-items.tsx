@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Events, Rarity, Staff } from "@prisma/client";
+import { Events, Staff } from "@prisma/client";
 
 import { ItemListingView, ItemsNameType, ItemType } from "@/types/view";
 import { toUpperCase, urlToFile } from "@/lib/utils";
@@ -32,7 +32,6 @@ interface EditItemsDialogProps<T extends ItemsNameType> {
   setOpenDialogAction: React.Dispatch<React.SetStateAction<boolean>>;
   currentUser: Staff;
   event: Events;
-  rarities: Rarity[];
 }
 
 export default function EditItemsDialog<T extends ItemsNameType>({
@@ -44,7 +43,6 @@ export default function EditItemsDialog<T extends ItemsNameType>({
   setOpenDialogAction,
   currentUser,
   event,
-  rarities,
 }: EditItemsDialogProps<T>) {
   const [imageLoaded, setImageLoaded] = useState(false);
   let defaultValues;
@@ -57,10 +55,6 @@ export default function EditItemsDialog<T extends ItemsNameType>({
     imageLink: "image" in item ? item.image : "",
     changedImage: false,
     errors: [],
-    rarity: {
-      level: item.rarity.level,
-      icon: rarities.find((r) => r.icon === item.rarity.icon)?.name || "",
-    },
   };
 
   const [itemData, setItemData] = useState<
@@ -96,15 +90,7 @@ export default function EditItemsDialog<T extends ItemsNameType>({
   const handleEdit = async () => {
     await handleEditItems({
       itemsViewPortId: viewPortType.id,
-      item: {
-        ...itemData,
-        rarity: {
-          level: item.rarity.level,
-          icon:
-            rarities.find((r) => r.name === item.rarity.icon)?.icon ??
-            "default",
-        },
-      },
+      item: itemData,
     });
 
     setOpenDialogAction(false);
@@ -139,7 +125,6 @@ export default function EditItemsDialog<T extends ItemsNameType>({
                   setItemDataAction={setItemData}
                   currentUser={currentUser}
                   event={event}
-                  rarities={rarities}
                 />
               ) : (
                 <p>Loading image...</p>
@@ -171,7 +156,6 @@ interface EditFromProps<T extends ItemsNameType> {
   >;
   currentUser: Staff;
   event: Events;
-  rarities: Rarity[];
 }
 
 function EditFrom<T extends ItemsNameType>({
@@ -180,7 +164,6 @@ function EditFrom<T extends ItemsNameType>({
   setItemDataAction,
   currentUser,
   event,
-  rarities,
 }: EditFromProps<T>) {
   return (
     <AddForm
@@ -190,7 +173,6 @@ function EditFrom<T extends ItemsNameType>({
       currentUser={currentUser}
       event={event}
       events={[...new Set([event])]}
-      rarities={rarities}
       onFormChangeAction={(value) => {
         setItemDataAction((prev) => {
           if (

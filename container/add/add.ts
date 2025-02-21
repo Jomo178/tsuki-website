@@ -13,15 +13,12 @@ export const addFormSchema = z.object({
   group: z.string().min(1, "Issue Group is required!"),
   code: z.string().min(1, "Issue Code is required!"),
   codeDuplicate: z.boolean().optional(),
-  droppable: z.boolean().optional().default(true),
-  rarity: z.object({
-    level: z
-      .number()
-      .int()
-      .min(1, "Rarity Level is required!")
-      .max(5, "Rarity Level cannot exceed 5!"),
-    icon: z.string().min(1, "Rarity Icon is required!"),
-  }),
+  dropAble: z.boolean().optional().default(true),
+  rarity: z
+    .number()
+    .int()
+    .min(1, "Rarity Level is required!")
+    .max(5, "Rarity Level cannot exceed 5!"),
   image: fileValidation(),
   errors: z
     .array(
@@ -68,9 +65,9 @@ function checkFileType(
 
 export const defaultAddFromValues = () => {
   return useLocalStorage<Omit<AddFormSchemaType, "errors" | "releaseDate">>(
-    "shuaDefaultAddFormValues",
+    "tsukiDefaultAddFormValues",
     {
-      id: "22",
+      id: "1",
       createdById: "",
       eventId: "",
       name: "",
@@ -78,8 +75,8 @@ export const defaultAddFromValues = () => {
       era: "",
       code: "",
       codeDuplicate: false,
-      droppable: true,
-      rarity: { level: 1, icon: "default" },
+      dropAble: true,
+      rarity: 1,
       image: new File([""], "filename"),
     }
   );
