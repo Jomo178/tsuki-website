@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import Bunny from "@/public/images/bunny.svg";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { Star } from "lucide-react";
 import { DiscordProfile } from "next-auth/providers/discord";
 
 import { ItemsNameType, ItemStatusViewType, ItemType } from "@/types/view";
@@ -187,7 +188,14 @@ function IssueCardDetails({
             <small className="text-sm font-medium leading-none">Rarity:</small>
             <code className="relative flex w-fit rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
               {Array.from({ length: issue.rarity }).map((_, starIndex) => (
-                <Star key={starIndex} size={16} />
+                <Image
+                  src={Bunny}
+                  key={starIndex}
+                  className="!fill-white text-white"
+                  alt="bunny"
+                  width={20}
+                  height={20}
+                />
               ))}
             </code>
           </div>

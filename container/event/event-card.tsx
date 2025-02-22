@@ -406,12 +406,16 @@ export default function EventCard({
                               const pendingName = ("pending" +
                                 toUpperCase(type)) as ItemsType;
 
+                              const approvedItems = event[pendingName].filter(
+                                (item) => item.approvedAt !== null
+                              );
+
                               return (
                                 <span
                                   key={index}
                                   className="text-xs text-muted-foreground"
                                 >
-                                  {`Approved ${toUpperCase(type)}: ${event[pendingName].length}`}
+                                  {`Approved ${toUpperCase(type)}: ${approvedItems.length}`}
                                   {index < event.itemsReleaseType.length - 1 &&
                                     ", "}
                                 </span>
