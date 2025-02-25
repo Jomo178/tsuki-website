@@ -82,7 +82,7 @@ model Staff {
   approvedIssues        Issues[]        @relation("IssuesApprovedBy")
   createdIssues         Issues[]        @relation("IssuesCreatedBy")
 
-  @@map("staff")
+  @@map("staffs")
 }
 
 enum AuthorizationType {
