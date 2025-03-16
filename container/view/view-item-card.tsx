@@ -213,7 +213,15 @@ export function ViewIssueFooter(issue: ItemType<"issues">[1]) {
 export function ViewItemImage(
   item: ItemType<"issues">[0] | ItemType<"issues">[1]
 ) {
-  return <Image src={item.image} alt={item.name} width={250} height={250} />;
+  return (
+    <Image
+      src={item.image}
+      alt={item.name}
+      width={250}
+      height={250}
+      unoptimized
+    />
+  );
 }
 
 interface RejectionsDialogProps {
