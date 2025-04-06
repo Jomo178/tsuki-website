@@ -43,7 +43,7 @@ function fileValidation(allowedExtensions: string[] = ["png", "jpg"]) {
       "File is required and must be a file."
     )
     .refine((file: File) => file?.name !== "", "File name cannot be empty.")
-    .refine((file) => file.size < 2_000_000, "Max size is 1MB.")
+    .refine((file) => file.size < 5_000_000, "Max size is 5MB.")
     .refine(
       (file) => checkFileType(file, allowedExtensions),
       `Only ${allowedExtensions.join(", ")} formats are supported.`
