@@ -89,6 +89,7 @@ enum AuthorizationType {
   issues
   staff
   event
+  bot
 }
 
 enum StaffRole {
