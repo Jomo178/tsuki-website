@@ -46,53 +46,98 @@ export async function getCurrentUser<T extends boolean>(
 
 export async function fetchUserProfilesFromDiscord(
   ids: string[],
-  batchSize: number = 5, // Max 10 requests per second
-  delay: number = 150 // 1 sec delay between batches
+  batchSize: number = 3, // Reduced batch size for better reliability
+  initialDelay: number = 500 // Increased initial delay between batches
 ): Promise<DiscordProfile[]> {
-  const fetchProfile = async (id: string): Promise<DiscordProfile> => {
-    const response = await fetch(`https://discord.com/api/users/${id}`, {
-      headers: {
-        Authorization: `Bot ${env.DISCORD_CLIENT_TOKEN}`,
-      },
-    });
+  const fetchProfileWithRetry = async (
+    id: string,
+    retries = 3,
+    backoff = 1000
+  ): Promise<DiscordProfile> => {
+    try {
+      const response = await fetch(`https://discord.com/api/users/${id}`, {
+        headers: {
+          Authorization: `Bot ${env.DISCORD_CLIENT_TOKEN}`,
+        },
+      });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch profile for ID ${id}: ${response.statusText}`
-      );
+      // Handle rate limiting explicitly
+      if (response.status === 429) {
+        const retryAfter =
+          parseInt(response.headers.get("retry-after") || "5", 10) * 1000;
+        await new Promise((resolve) => setTimeout(resolve, retryAfter));
+        return fetchProfileWithRetry(id, retries, backoff);
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch profile for ID ${id}: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data: DiscordProfile = await response.json();
+
+      if (data.avatar === null) {
+        data.avatar = `https://cdn.discordapp.com/embed/avatars/${
+          parseInt(data.discriminator) % 5
+        }.png`;
+      } else {
+        const format = data.avatar.startsWith("a_") ? "gif" : "png";
+        data.avatar = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.${format}`;
+      }
+
+      return data;
+    } catch (error) {
+      if (retries > 0) {
+        console.log(
+          `Error fetching ID ${id}, retrying... (${retries} attempts left)`
+        );
+        await new Promise((resolve) => setTimeout(resolve, backoff));
+        return fetchProfileWithRetry(id, retries - 1, backoff * 2);
+      }
+      throw error;
     }
-
-    const data: DiscordProfile = await response.json();
-
-    if (data.avatar === null) {
-      data.avatar = `https://cdn.discordapp.com/embed/avatars/${
-        parseInt(data.discriminator) % 5
-      }.png`;
-    } else {
-      const format = data.avatar.startsWith("a_") ? "gif" : "png";
-      data.avatar = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.${format}`;
-    }
-
-    return data;
   };
 
   let results: DiscordProfile[] = [];
+  let currentDelay = initialDelay;
 
   for (let i = 0; i < ids.length; i += batchSize) {
     const batch = ids.slice(i, i + batchSize);
 
-    // Send batch of requests in parallel
-    const batchResults = await Promise.allSettled(batch.map(fetchProfile));
+    try {
+      // Process each batch sequentially to reduce load
+      const batchResults = [];
+      for (const id of batch) {
+        try {
+          const profile = await fetchProfileWithRetry(id);
+          batchResults.push({ status: "fulfilled", value: profile });
+        } catch (error) {
+          console.error(`Failed to fetch profile for ID ${id}:`, error);
+          batchResults.push({ status: "rejected", reason: error });
+        }
 
-    // Filter successful results
-    results = results.concat(
-      batchResults.flatMap((res) =>
-        res.status === "fulfilled" ? [res.value] : []
-      )
-    );
+        // Small delay between individual requests in the same batch
+        if (id !== batch[batch.length - 1]) {
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+      }
 
-    if (i + batchSize < ids.length) {
-      await new Promise((resolve) => setTimeout(resolve, delay)); // Wait 1 second before next batch
+      // Filter successful results
+      results = results.concat(
+        batchResults.flatMap((res: any) =>
+          res.status === "fulfilled" ? [res.value] : []
+        )
+      );
+
+      // Wait between batches with adaptive delay
+      if (i + batchSize < ids.length) {
+        await new Promise((resolve) => setTimeout(resolve, currentDelay));
+      }
+    } catch (error) {
+      console.error(`Error processing batch:`, error);
+      // If we encounter an error, increase the delay for the next batch
+      currentDelay = Math.min(currentDelay * 1.5, 10000); // Up to 10 seconds max
     }
   }
 

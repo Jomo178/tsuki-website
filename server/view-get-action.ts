@@ -1,7 +1,5 @@
 "use server";
 
-import { Prisma } from "@prisma/client";
-
 import {
   IssuesWithRelation,
   PendingIssuesWithRelation,

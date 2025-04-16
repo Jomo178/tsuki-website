@@ -167,13 +167,9 @@ export async function editItems<T extends ItemsNameType>({
   const items = itemsViewPortId.split("-")[1] as T;
 
   if (item.changedImage) {
-    const deleteImage = await deleteItems(
-      itemsViewPortId,
-      [{ id: item.id, image: item.imageLink }],
-      "tsuki-delete-items"
-    );
+    const deleteImage = await utapi.deleteFiles(item.imageLink.split("/"));
 
-    if (!deleteImage.message) return { message: "Item was not Edited" };
+    if (!deleteImage.success) return { message: "Item was not Edited" };
 
     const response = await utapi.uploadFiles(item.image);
 
@@ -189,6 +185,7 @@ export async function editItems<T extends ItemsNameType>({
   let edited;
   let data = {};
   const include = {
+    event: true,
     createdBy: true,
     approvedBy: true,
     rejections: {
@@ -212,26 +209,6 @@ export async function editItems<T extends ItemsNameType>({
   }
 
   if (itemsViewPortId.includes("released")) {
-    const getIssue = await prisma.issues.findUnique({
-      where: {
-        id: item.id,
-      },
-    });
-
-    await prisma.cards.updateMany({
-      where: {
-        code: getIssue!.code,
-      },
-      data: {
-        name: item.name,
-        group: item.group,
-        era: item.era,
-        code: item.code,
-        rarity: item.rarity,
-        image: item.imageLink,
-      },
-    });
-
     edited = await (prisma[items] as any).update({
       where: {
         id: item.id,

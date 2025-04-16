@@ -171,8 +171,10 @@ function EditFrom<T extends ItemsNameType>({
       hiddenFields={["releaseDate"]}
       defaultValues={itemData}
       currentUser={currentUser}
-      event={event}
-      events={[...new Set([event])]}
+      // @ts-ignore
+      event={itemData.event}
+      // @ts-ignore
+      events={[...new Set([itemData.event])]}
       onFormChangeAction={(value) => {
         setItemDataAction((prev) => {
           if (
