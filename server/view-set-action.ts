@@ -167,9 +167,9 @@ export async function editItems<T extends ItemsNameType>({
   const items = itemsViewPortId.split("-")[1] as T;
 
   if (item.changedImage) {
-    const deleteImage = await utapi.deleteFiles(item.imageLink.split("/"));
+    // const deleteImage = await utapi.deleteFiles(item.imageLink.split("/"));
 
-    if (!deleteImage.success) return { message: "Item was not Edited" };
+    // if (!deleteImage.success) return { message: "Item was not Edited" };
 
     const response = await utapi.uploadFiles(item.image);
 
