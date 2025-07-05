@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
 import { staffFormSchema, StaffFormSchemaType } from "@/container/staff/staff";
 import { DiscordProfile } from "next-auth/providers/discord";
 
@@ -46,8 +45,6 @@ export async function addStaff(
     return { message: "Failed to add staff." };
   }
 
-  revalidateTag("all-staff");
-
   return { message: "Staff added successfully!", staff: staffDiscordInfo[0] };
 }
 
@@ -88,8 +85,6 @@ export async function editStaff(formData: StaffFormSchemaType) {
     return { message: "Failed to edit staff." };
   }
 
-  revalidateTag("all-staff");
-
   return { message: "Staff edited successfully!", staff: staffDiscordInfo[0] };
 }
 
@@ -108,8 +103,6 @@ export async function archiveStaff(discordId: string, isInTeam: boolean) {
       isInTeam: !isInTeam,
     },
   });
-
-  revalidateTag("all-staff");
 
   return {
     message: `Staff ${isInTeam ? "archived" : "unarchived"} successfully!`,

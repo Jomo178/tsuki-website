@@ -1,5 +1,3 @@
-import type { Metadata } from "next";
-
 import "../styles/globals.css";
 
 import { Inter as FontSans } from "next/font/google";

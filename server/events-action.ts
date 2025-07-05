@@ -1,30 +1,25 @@
 "use server";
 
-import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { eventFormSchema, EventFormSchemaType } from "@/container/event/event";
 import { ItemsType } from "@prisma/client";
 
 import { EventsWithRelation } from "@/types/prisma-relations";
 import { prisma } from "@/lib/database";
 
-export const getAllEvents = unstable_cache(
-  async (): Promise<EventsWithRelation[]> => {
-    const events = await prisma.events.findMany({
-      orderBy: {
-        name: "desc",
-      },
-      include: {
-        createdBy: true,
-        issues: true,
-        pendingIssues: true,
-      },
-    });
-
-    return events;
-  },
-  ["/dashboard/events"],
-  { revalidate: 60 * 60 * 24, tags: ["all-events"] }
-);
+export const getAllEvents = async (): Promise<EventsWithRelation[]> => {
+  const events = await prisma.events.findMany({
+    orderBy: {
+      name: "desc",
+    },
+    include: {
+      createdBy: true,
+      issues: true,
+      pendingIssues: true,
+    },
+  });
+  return events;
+};
 
 export const getCurrentEvent = unstable_cache(
   async (items: ItemsType[]): Promise<EventsWithRelation | null> => {
@@ -98,7 +93,6 @@ export async function addEvent(
     },
   });
 
-  revalidateTag("all-events");
   revalidateTag("current-event");
 
   return { message: "Event added successfully!", event };
@@ -136,7 +130,6 @@ export async function editEvent(
     },
   });
 
-  revalidateTag("all-events");
   revalidateTag("current-event");
 
   return { message: "Event updated successfully!", event };
@@ -203,11 +196,10 @@ export async function endEvent(eventId: string) {
     const event = await tx.issues.updateMany({
       where: { eventId: eventId },
       data: {
-        dropAble: false,
+        dropAble: true,
       },
     });
 
-    revalidateTag("all-events");
     revalidateTag("current-event");
     return { message: "Event ended successfully!" };
   });

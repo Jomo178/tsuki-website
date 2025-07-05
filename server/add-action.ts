@@ -36,7 +36,6 @@ export async function addIssues(
     },
   });
 
-  revalidateTag("all-events");
   revalidateTag("current-event");
 
   return { message: "successfully added!", variant: "success" };

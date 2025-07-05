@@ -37,7 +37,6 @@ export async function approveItems(
       }),
     ]);
 
-    revalidateTag("all-events");
     revalidateTag("current-event");
 
     return {
@@ -66,7 +65,6 @@ export async function rejectItems(
     })),
   });
 
-  revalidateTag("all-events");
   revalidateTag("current-event");
 
   return {
@@ -95,7 +93,6 @@ export async function resubmitRejectedItems(
       }),
     ]);
 
-    revalidateTag("all-events");
     revalidateTag("current-event");
 
     return {
@@ -117,7 +114,7 @@ export async function deleteItems<T extends ItemsNameType>(
   if (items.length == 0) return { message: "No item selected." };
   const currentUser = await getCurrentUser(true);
 
-  if (password !== "tsuki-delete-items") {
+  if (password !== "hanni-delete-items") {
     throw new Error("Items were not deleted. Incorrect password.");
   }
 
@@ -151,7 +148,6 @@ export async function deleteItems<T extends ItemsNameType>(
     }
   }
 
-  revalidateTag("all-events");
   revalidateTag("current-event");
 
   return {
@@ -167,9 +163,9 @@ export async function editItems<T extends ItemsNameType>({
   const items = itemsViewPortId.split("-")[1] as T;
 
   if (item.changedImage) {
-    // const deleteImage = await utapi.deleteFiles(item.imageLink.split("/"));
+    const deleteImage = await utapi.deleteFiles(item.imageLink.split("/"));
 
-    // if (!deleteImage.success) return { message: "Item was not Edited" };
+    if (!deleteImage.success) return { message: "Item was not Edited" };
 
     const response = await utapi.uploadFiles(item.image);
 
@@ -228,7 +224,6 @@ export async function editItems<T extends ItemsNameType>({
     });
   }
 
-  revalidateTag("all-events");
   revalidateTag("current-event");
 
   return {
