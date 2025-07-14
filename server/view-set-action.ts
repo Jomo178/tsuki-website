@@ -114,7 +114,7 @@ export async function deleteItems<T extends ItemsNameType>(
   if (items.length == 0) return { message: "No item selected." };
   const currentUser = await getCurrentUser(true);
 
-  if (password !== "hanni-delete-items") {
+  if (password !== "tsuki-delete-items") {
     throw new Error("Items were not deleted. Incorrect password.");
   }
 
