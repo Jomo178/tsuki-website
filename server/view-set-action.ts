@@ -13,6 +13,8 @@ import {
 import { prisma } from "@/lib/database";
 import { getCurrentUser } from "@/lib/session";
 import { toUpperCase } from "@/lib/utils";
+import { UTFile } from "uploadthing/server";
+import { nanoid } from "nanoid";
 
 import { utapi } from "./uploadthing";
 
@@ -114,7 +116,7 @@ export async function deleteItems<T extends ItemsNameType>(
   if (items.length == 0) return { message: "No item selected." };
   const currentUser = await getCurrentUser(true);
 
-  if (password !== "hanni-delete-items") {
+  if (password !== "tsuki-delete-items") {
     throw new Error("Items were not deleted. Incorrect password.");
   }
 
@@ -167,7 +169,24 @@ export async function editItems<T extends ItemsNameType>({
 
     if (!deleteImage.success) return { message: "Item was not Edited" };
 
-    const response = await utapi.uploadFiles(item.image);
+    const response = await utapi.uploadFiles(
+        new UTFile(
+          [item.image],
+          `${item.name.replace(
+            / /g,
+            "-"
+          )}_${item.group.replace(/ /g, "-")}_${
+            item.rarity
+          }.png`,
+          {
+            type: item.image.type,
+            customId: `edited_${item.era.replace(
+              / /g,
+              "-"
+            )}_1341699015259062302_${nanoid(10)}`,
+          }
+        )
+      );
 
     if (response.error?.code || !response.data) {
       throw new Error(

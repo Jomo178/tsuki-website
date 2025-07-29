@@ -196,7 +196,7 @@ export async function endEvent(eventId: string) {
     const event = await tx.issues.updateMany({
       where: { eventId: eventId },
       data: {
-        dropAble: true,
+        dropAble: false,
       },
     });
 
