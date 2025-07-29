@@ -3,6 +3,8 @@
 import { revalidateTag } from "next/cache";
 import { addFormSchema, AddFormSchemaType } from "@/container/add/add";
 import { UTFile } from "uploadthing/server";
+import { nanoid } from "nanoid";
+
 
 import { prisma } from "@/lib/database";
 
@@ -31,7 +33,7 @@ export async function addIssues(
             customId: `added_${formData.era.replace(
               / /g,
               "-"
-            )}_${botId}_${nanoid(10)}`,
+            )}_1341699015259062302_${nanoid(10)}`,
           }
         )
       );
