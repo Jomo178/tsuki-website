@@ -2,6 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 import { addFormSchema, AddFormSchemaType } from "@/container/add/add";
+import { UTFile } from "uploadthing/server";
 
 import { prisma } from "@/lib/database";
 
@@ -16,7 +17,24 @@ export async function addIssues(
     return { message: "Not valid Data.", variant: "error" };
   }
 
-  const uploadImage = await utapi.uploadFiles(formData.image);
+  const uploadImage = await utapi.uploadFiles(
+        new UTFile(
+          [formData.image],
+          `${formData.name.replace(
+            / /g,
+            "-"
+          )}_${formData.group.replace(/ /g, "-")}_${
+            formData.rarity
+          }.png`,
+          {
+            type: formData.image.type,
+            customId: `edited_${formData.era.replace(
+              / /g,
+              "-"
+            )}_${botId}_${nanoid(10)}`,
+          }
+        )
+      );
 
   if (uploadImage.error?.code || !uploadImage.data) {
     return { message: "Image upload failed.", variant: "error" };
