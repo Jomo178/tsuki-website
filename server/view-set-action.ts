@@ -14,6 +14,7 @@ import { prisma } from "@/lib/database";
 import { getCurrentUser } from "@/lib/session";
 import { toUpperCase } from "@/lib/utils";
 import { UTFile } from "uploadthing/server";
+import { nanoid } from "nanoid";
 
 import { utapi } from "./uploadthing";
 
@@ -182,7 +183,7 @@ export async function editItems<T extends ItemsNameType>({
             customId: `edited_${item.era.replace(
               / /g,
               "-"
-            )}_${botId}_${nanoid(10)}`,
+            )}_1341699015259062302_${nanoid(10)}`,
           }
         )
       );
