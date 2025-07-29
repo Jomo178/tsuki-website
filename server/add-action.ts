@@ -28,7 +28,7 @@ export async function addIssues(
           }.png`,
           {
             type: formData.image.type,
-            customId: `edited_${formData.era.replace(
+            customId: `added_${formData.era.replace(
               / /g,
               "-"
             )}_${botId}_${nanoid(10)}`,
