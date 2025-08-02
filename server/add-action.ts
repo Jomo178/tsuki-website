@@ -2,9 +2,8 @@
 
 import { revalidateTag } from "next/cache";
 import { addFormSchema, AddFormSchemaType } from "@/container/add/add";
-import { UTFile } from "uploadthing/server";
 import { nanoid } from "nanoid";
-
+import { UTFile } from "uploadthing/server";
 
 import { prisma } from "@/lib/database";
 
@@ -20,23 +19,21 @@ export async function addIssues(
   }
 
   const uploadImage = await utapi.uploadFiles(
-        new UTFile(
-          [formData.image],
-          `${formData.name.replace(
-            / /g,
-            "-"
-          )}_${formData.group.replace(/ /g, "-")}_${
-            formData.rarity
-          }.png`,
-          {
-            type: formData.image.type,
-            customId: `added_${formData.era.replace(
-              / /g,
-              "-"
-            )}_1341699015259062302_${nanoid(10)}`,
-          }
-        )
-      );
+    new UTFile(
+      [formData.image],
+      `${formData.name.replace(
+        / /g,
+        "-"
+      )}_${formData.group.replace(/ /g, "-")}_${formData.rarity}.png`,
+      {
+        type: formData.image.type,
+        customId: `added_${formData.era.replace(
+          / /g,
+          "-"
+        )}_1341699015259062302_${nanoid(10)}`,
+      }
+    )
+  );
 
   if (uploadImage.error?.code || !uploadImage.data) {
     return { message: "Image upload failed.", variant: "error" };
